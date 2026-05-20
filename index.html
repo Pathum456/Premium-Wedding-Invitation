@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding of Akarsha & Sadeepa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@200;300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        wedding: {
+                            emerald: '#0f2e26',
+                            gold: '#b89243',
+                            goldlight: '#dfc07e',
+                            ivory: '#faf8f2',
+                            charcoal: '#2e2e2c',
+                            blush: '#f5ebe6'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                        cursive: ['Great Vibes', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #faf8f2;
+            overflow-x: hidden;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .seal-pulse {
+            animation: pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="font-sans text-wedding-charcoal">
+
+    <div id="envelope-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-wedding-emerald">
+        <div class="relative max-w-md w-11/12 mx-auto bg-wedding-ivory p-8 md:p-12 rounded-2xl shadow-2xl border-2 border-wedding-gold/30 text-center">
+            <span class="font-sans tracking-[0.4em] uppercase text-xs text-wedding-gold">You are Cordially Invited</span>
+
+            <h2 class="font-cursive text-5xl md:text-6xl text-wedding-emerald my-6">Akarsha & Sadeepa</h2>
+
+            <p class="font-sans text-xs tracking-widest text-wedding-gold/80 italic">To celebrate our love and new beginnings</p>
+
+            <div class="w-24 h-[1px] bg-wedding-gold mx-auto my-6"></div>
+
+            <button id="btn-open" class="relative group focus:outline-none">
+                <div class="seal-pulse relative w-20 h-20 bg-gradient-to-br from-wedding-gold to-wedding-gold/80 rounded-full flex items-center justify-center shadow-lg border border-white/20">
+                    <svg class="w-10 h-10 text-white fill-current" viewBox="0 0 24 24">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </div>
+            </button>
+
+            <p class="text-xs text-wedding-gold uppercase tracking-[0.2em] font-medium mt-4">Tap to Open</p>
+        </div>
+    </div>
+
+    <div id="main-content" class="hidden opacity-0 transition-opacity duration-1000">
+
+        <section class="relative h-screen flex flex-col justify-center items-center text-center px-4 overflow-hidden bg-wedding-emerald">
+            <div class="absolute inset-0 z-0 bg-cover bg-center filter brightness-50 contrast-105"
+                style="background-image:url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=1600')">
+            </div>
+
+            <div class="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-wedding-emerald/90 z-0"></div>
+
+            <div class="relative z-10 text-white max-w-3xl px-6 py-12 rounded-3xl backdrop-blur-xs bg-black/10 border border-white/10 mx-auto">
+                <span class="text-xs md:text-sm tracking-[0.4em] uppercase text-wedding-goldlight mb-4 block">The Wedding Invitation</span>
+
+                <h1 class="font-cursive text-7xl md:text-9xl text-white my-6 drop-shadow-md">
+                    Akarsha & Sadeepa
+                </h1>
+
+                <p class="font-sans text-sm md:text-base font-light italic text-wedding-blush tracking-wider mt-2">
+                    "Together is our favorite place to be"
+                </p>
+
+                <div class="w-24 h-[1px] bg-wedding-goldlight/80 mx-auto my-8"></div>
+
+                <p class="text-sm md:text-lg tracking-[0.3em] uppercase text-wedding-goldlight">
+                    December 18, 2026
+                </p>
+                <p class="text-xs tracking-widest uppercase text-white/70 mt-2">
+                    Colombo, Sri Lanka
+                </p>
+            </div>
+        </section>
+
+        <section class="py-20 px-4 max-w-5xl mx-auto text-center">
+            <span class="font-sans tracking-[0.3em] uppercase text-xs text-wedding-gold block mb-2">Counting Down To Our Forever</span>
+            <h2 class="text-4xl md:text-5xl font-serif text-wedding-emerald mb-6">Every Moment Matters</h2>
+
+            <div class="grid grid-cols-4 gap-2 md:gap-6 max-w-2xl mx-auto mb-16">
+                <div class="bg-white p-4 md:p-8 rounded-2xl shadow-md border border-wedding-gold/10">
+                    <span id="days" class="block text-3xl md:text-5xl font-serif font-bold text-wedding-emerald">00</span>
+                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-gray-400 font-medium">Days</span>
+                </div>
+                <div class="bg-white p-4 md:p-8 rounded-2xl shadow-md border border-wedding-gold/10">
+                    <span id="hours" class="block text-3xl md:text-5xl font-serif font-bold text-wedding-emerald">00</span>
+                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-gray-400 font-medium">Hours</span>
+                </div>
+                <div class="bg-white p-4 md:p-8 rounded-2xl shadow-md border border-wedding-gold/10">
+                    <span id="minutes" class="block text-3xl md:text-5xl font-serif font-bold text-wedding-emerald">00</span>
+                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-gray-400 font-medium">Minutes</span>
+                </div>
+                <div class="bg-white p-4 md:p-8 rounded-2xl shadow-md border border-wedding-gold/10">
+                    <span id="seconds" class="block text-3xl md:text-5xl font-serif font-bold text-wedding-emerald">00</span>
+                    <span class="text-[10px] md:text-xs uppercase tracking-widest text-gray-400 font-medium">Seconds</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 bg-wedding-blush/30 px-4">
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=800"
+                        class="rounded-2xl shadow-lg border border-wedding-gold/20 w-full h-full object-cover">
+                </div>
+
+                <div class="space-y-6">
+                    <span class="font-cursive text-3xl text-wedding-gold">A Love Written in the Stars</span>
+                    <h3 class="text-2xl font-serif text-wedding-emerald font-semibold">From Friends to Forever</h3>
+
+                    <p class="text-gray-600 leading-relaxed">
+                        Our story began exactly four years ago with a simple cup of coffee and hours of effortless conversation.
+                    </p>
+
+                    <p class="text-gray-600 leading-relaxed">
+                        We learned that home isn't a physical place, but rather a person you love with your entire soul.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="bg-wedding-emerald text-white py-16 text-center px-4">
+            <div class="max-w-xl mx-auto space-y-4">
+                <span class="font-cursive text-4xl text-wedding-goldlight">Akarsha & Sadeepa</span>
+                <p class="text-[11px] uppercase tracking-[0.4em] text-wedding-blush/60">December 18, 2026</p>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        const btnOpen = document.getElementById('btn-open');
+        const overlay = document.getElementById('envelope-overlay');
+        const content = document.getElementById('main-content');
+
+        btnOpen.addEventListener('click', () => {
+            overlay.classList.add('hidden');
+            content.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.add('opacity-100');
+            }, 100);
+        });
+
+        function updateCountdown() {
+            const targetDate = new Date('2026-12-18T14:00:00').getTime();
+            const now = new Date().getTime();
+            const difference = targetDate - now;
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = String(days).padStart(2, '0');
+            document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+            document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
+        }
+
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+</body>
+</html>
