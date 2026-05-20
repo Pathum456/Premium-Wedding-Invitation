@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wedding of Akarsha & Sadeepa</title>
+    <title id="page-title">Wedding of Akarsha & Sadeepa</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:wght@200;300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    
     <script>
         tailwind.config = {
             theme: {
@@ -31,155 +31,706 @@
             }
         }
     </script>
-
+    
     <style>
         body {
             background-color: #faf8f2;
             overflow-x: hidden;
         }
-
         html {
             scroll-behavior: smooth;
         }
-
-        .seal-pulse {
-            animation: pulse 3s infinite ease-in-out;
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-
-        @keyframes pulse {
+        ::-webkit-scrollbar-track {
+            background: #faf8f2;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #b89243;
+            border-radius: 4px;
+        }
+        .gold-glow {
+            box-shadow: 0 0 15px rgba(184, 146, 67, 0.2);
+        }
+        .text-glow {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .floral-border {
+            border-image: linear-gradient(to right, #b89243, #dfc07e, #b89243) 1;
+        }
+        @keyframes seal-pop {
             0% { transform: scale(1); }
             50% { transform: scale(1.08); }
             100% { transform: scale(1); }
+        }
+        .seal-pulse {
+            animation: seal-pop 3s infinite ease-in-out;
         }
     </style>
 </head>
 <body class="font-sans text-wedding-charcoal">
 
-    <div id="envelope-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-wedding-emerald">
-        <div class="relative max-w-md w-11/12 mx-auto bg-wedding-ivory p-8 md:p-12 rounded-2xl shadow-2xl border-2 border-wedding-gold/30 text-center">
-            <span class="font-sans tracking-[0.4em] uppercase text-xs text-wedding-gold">You are Cordially Invited</span>
-
-            <h2 class="font-cursive text-5xl md:text-6xl text-wedding-emerald my-6">Akarsha & Sadeepa</h2>
-
-            <p class="font-sans text-xs tracking-widest text-wedding-gold/80 italic">To celebrate our love and new beginnings</p>
-
-            <div class="w-24 h-[1px] bg-wedding-gold mx-auto my-6"></div>
-
-            <button id="btn-open" class="relative group focus:outline-none">
-                <div class="seal-pulse relative w-20 h-20 bg-gradient-to-br from-wedding-gold to-wedding-gold/80 rounded-full flex items-center justify-center shadow-lg border border-white/20">
-                    <svg class="w-10 h-10 text-white fill-current" viewBox="0 0 24 24">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                    </svg>
-                </div>
-            </button>
-
-            <p class="text-xs text-wedding-gold uppercase tracking-[0.2em] font-medium mt-4">Tap to Open</p>
+    <!-- OVERLAY ENVELOPE -->
+    <div id="envelope-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-wedding-emerald transition-all duration-1000 ease-in-out">
+        <canvas id="envelope-canvas" class="absolute inset-0 w-full h-full pointer-events-none opacity-40"></canvas>
+        
+        <div class="relative max-w-md w-11/12 mx-auto bg-wedding-ivory p-8 md:p-12 rounded-2xl shadow-2xl border-2 border-wedding-gold/30 text-center flex flex-col justify-between items-center z-10">
+            <div class="absolute top-4 left-4 text-wedding-gold opacity-60 text-xl">✨</div>
+            <div class="absolute top-4 right-4 text-wedding-gold opacity-60 text-xl">✨</div>
+            
+            <div class="my-auto space-y-6">
+                <span class="font-sans tracking-[0.4em] uppercase text-xs text-wedding-gold">You are Cordially Invited</span>
+                
+                <h2 id="envelope-couple-names" class="font-cursive text-5xl md:text-6xl text-wedding-emerald my-4">Akarsha & Sadeepa</h2>
+                <p class="font-sans text-xs tracking-widest text-wedding-gold/80 italic">To celebrate our love and new beginnings</p>
+                
+                <div class="w-24 h-[1px] bg-wedding-gold mx-auto my-6"></div>
+                
+                <button id="btn-open" class="relative group focus:outline-none">
+                    <div class="absolute inset-0 rounded-full bg-wedding-gold/20 blur-md group-hover:scale-110 transition-transform duration-300"></div>
+                    <div class="seal-pulse relative w-20 h-20 bg-gradient-to-br from-wedding-gold to-wedding-gold/80 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-300 border border-white/20">
+                        <svg class="w-10 h-10 text-white fill-current" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+                </button>
+                <p class="text-xs text-wedding-gold uppercase tracking-[0.2em] font-medium mt-4">Tap to Open</p>
+            </div>
+            
+            <div class="absolute bottom-4 left-4 text-wedding-gold opacity-60 text-xl">✨</div>
+            <div class="absolute bottom-4 right-4 text-wedding-gold opacity-60 text-xl">✨</div>
         </div>
     </div>
 
+    <!-- FLOATING MUSIC CONTROLLER -->
+    <div id="music-container" class="fixed bottom-6 right-6 z-40 hidden">
+        <button id="btn-music-toggle" class="w-12 h-12 bg-white/90 text-wedding-gold rounded-full flex items-center justify-center shadow-lg border border-wedding-gold/30 hover:scale-105 transition-all duration-300" title="Toggle Sound">
+            <i id="music-icon" class="fas fa-volume-up text-lg"></i>
+        </button>
+    </div>
+
+    <!-- FALLING GOLD & PETAL CANVAS -->
+    <canvas id="ambient-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-30 hidden"></canvas>
+
     <div id="main-content" class="hidden opacity-0 transition-opacity duration-1000">
-
+        
+        <!-- HERO HERO HERO HERO HERO -->
         <section class="relative h-screen flex flex-col justify-center items-center text-center px-4 overflow-hidden bg-wedding-emerald">
-            <div class="absolute inset-0 z-0 bg-cover bg-center filter brightness-50 contrast-105"
-                style="background-image:url('https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=1600')">
-            </div>
-
+            <div id="hero-bg" class="absolute inset-0 z-0 bg-cover bg-center filter brightness-50 contrast-105 transition-all duration-[3000ms]"></div>
             <div class="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-wedding-emerald/90 z-0"></div>
+
+            <div class="absolute inset-8 border border-wedding-gold/30 rounded-lg pointer-events-none z-10 hidden md:block"></div>
+            <div class="absolute inset-12 border border-wedding-gold/15 rounded-lg pointer-events-none z-10 hidden md:block"></div>
 
             <div class="relative z-10 text-white max-w-3xl px-6 py-12 rounded-3xl backdrop-blur-xs bg-black/10 border border-white/10 mx-auto">
                 <span class="text-xs md:text-sm tracking-[0.4em] uppercase text-wedding-goldlight mb-4 block">The Wedding Invitation</span>
-
-                <h1 class="font-cursive text-7xl md:text-9xl text-white my-6 drop-shadow-md">
+                
+                <h1 id="hero-couple-names" class="font-cursive text-7xl md:text-9xl text-white my-6 drop-shadow-md">
                     Akarsha & Sadeepa
                 </h1>
-
-                <p class="font-sans text-sm md:text-base font-light italic text-wedding-blush tracking-wider mt-2">
+                
+                <p id="hero-tagline" class="font-sans text-sm md:text-base font-light italic text-wedding-blush tracking-wider mt-2">
                     "Together is our favorite place to be"
                 </p>
-
+                
                 <div class="w-24 h-[1px] bg-wedding-goldlight/80 mx-auto my-8"></div>
-
-                <p class="text-sm md:text-lg tracking-[0.3em] uppercase text-wedding-goldlight">
+                
+                <p id="hero-display-date" class="text-sm md:text-lg tracking-[0.3em] uppercase text-wedding-goldlight">
                     December 18, 2026
                 </p>
-                <p class="text-xs tracking-widest uppercase text-white/70 mt-2">
+                <p id="hero-display-location" class="text-xs tracking-widest uppercase text-white/70 mt-2">
                     Colombo, Sri Lanka
                 </p>
             </div>
+            
+            <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 text-center text-white/80 animate-bounce">
+                <p class="text-[10px] uppercase tracking-[0.3em] mb-2 text-wedding-goldlight">Scroll Down</p>
+                <i class="fas fa-chevron-down text-lg text-wedding-goldlight"></i>
+            </div>
         </section>
 
-        <section class="py-20 px-4 max-w-5xl mx-auto text-center">
+        <!-- COUNTDOWN TIMER SECTION -->
+        <section class="py-20 px-4 max-w-5xl mx-auto text-center reveal">
             <span class="font-sans tracking-[0.3em] uppercase text-xs text-wedding-gold block mb-2">Counting Down To Our Forever</span>
             <h2 class="text-4xl md:text-5xl font-serif text-wedding-emerald mb-6">Every Moment Matters</h2>
+            
+            <p class="text-gray-600 leading-relaxed max-w-2xl mx-auto mb-12">
+                We are eagerly anticipating the day we stand before our family and friends to exchange our marriage vows. Join us in counting down to the celebrations.
+            </p>
 
             <div class="grid grid-cols-4 gap-2 md:gap-6 max-w-2xl mx-auto mb-16">
-                <div class="bg-white p-4 md:p-8 rounded-2xl shadow-md border border-wedding-gold/10">
-                    <span id="days" class="block text-3xl md:text-5xl font-serif font-bold text-wedding-emerald">00</span>
+                <div class="bg-white p-4 md:p-8 rounded-2xl shadow-md border border-wedding-gold/10 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-[3px] bg-wedding-gold"></div>
+                    <span id="days" class="block text-3xl md:text-5xl font-serif font-bold text-wedding-emerald group-hover:scale-105 transition-transform duration-300">00</span>
                     <span class="text-[10px] md:text-xs uppercase tracking-widest text-gray-400 font-medium">Days</span>
                 </div>
-                <div class="bg-white p-4 md:p-8 rounded-2xl shadow-md border border-wedding-gold/10">
-                    <span id="hours" class="block text-3xl md:text-5xl font-serif font-bold text-wedding-emerald">00</span>
+                <div class="bg-white p-4 md:p-8 rounded-2xl shadow-md border border-wedding-gold/10 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-[3px] bg-wedding-gold"></div>
+                    <span id="hours" class="block text-3xl md:text-5xl font-serif font-bold text-wedding-emerald group-hover:scale-105 transition-transform duration-300">00</span>
                     <span class="text-[10px] md:text-xs uppercase tracking-widest text-gray-400 font-medium">Hours</span>
                 </div>
-                <div class="bg-white p-4 md:p-8 rounded-2xl shadow-md border border-wedding-gold/10">
-                    <span id="minutes" class="block text-3xl md:text-5xl font-serif font-bold text-wedding-emerald">00</span>
+                <div class="bg-white p-4 md:p-8 rounded-2xl shadow-md border border-wedding-gold/10 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-[3px] bg-wedding-gold"></div>
+                    <span id="minutes" class="block text-3xl md:text-5xl font-serif font-bold text-wedding-emerald group-hover:scale-105 transition-transform duration-300">00</span>
                     <span class="text-[10px] md:text-xs uppercase tracking-widest text-gray-400 font-medium">Minutes</span>
                 </div>
-                <div class="bg-white p-4 md:p-8 rounded-2xl shadow-md border border-wedding-gold/10">
-                    <span id="seconds" class="block text-3xl md:text-5xl font-serif font-bold text-wedding-emerald">00</span>
+                <div class="bg-white p-4 md:p-8 rounded-2xl shadow-md border border-wedding-gold/10 relative overflow-hidden group">
+                    <div class="absolute top-0 left-0 w-full h-[3px] bg-wedding-gold"></div>
+                    <span id="seconds" class="block text-3xl md:text-5xl font-serif font-bold text-wedding-emerald group-hover:scale-105 transition-transform duration-300">00</span>
                     <span class="text-[10px] md:text-xs uppercase tracking-widest text-gray-400 font-medium">Seconds</span>
                 </div>
             </div>
+            
+            <div class="w-16 h-[1px] bg-wedding-gold/40 mx-auto"></div>
         </section>
 
-        <section class="py-20 bg-wedding-blush/30 px-4">
-            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=800"
-                        class="rounded-2xl shadow-lg border border-wedding-gold/20 w-full h-full object-cover">
+        <!-- OUR STORY SECTION -->
+        <section class="py-20 bg-wedding-blush/30 px-4 reveal">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-16">
+                    <span class="font-sans tracking-[0.3em] uppercase text-xs text-wedding-gold block mb-2">Our Love Journey</span>
+                    <h2 class="text-4xl md:text-5xl font-serif text-wedding-emerald">How It All Began</h2>
+                    <div class="w-24 h-[1px] bg-wedding-gold mx-auto mt-4"></div>
                 </div>
 
-                <div class="space-y-6">
-                    <span class="font-cursive text-3xl text-wedding-gold">A Love Written in the Stars</span>
-                    <h3 class="text-2xl font-serif text-wedding-emerald font-semibold">From Friends to Forever</h3>
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="relative space-y-4">
+                        <div class="relative rounded-2xl overflow-hidden shadow-lg border border-wedding-gold/20 aspect-video">
+                            <img id="story-main-img" src="" alt="Beautiful Moment Together" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-wedding-emerald/10"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="rounded-xl overflow-hidden shadow-md aspect-square border border-wedding-gold/10">
+                                <img id="story-thumb1-img" src="" alt="Proposal moment" class="w-full h-full object-cover">
+                            </div>
+                            <div class="rounded-xl overflow-hidden shadow-md aspect-square border border-wedding-gold/10">
+                                <img id="story-thumb2-img" src="" alt="Walking together" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                    </div>
 
-                    <p class="text-gray-600 leading-relaxed">
-                        Our story began exactly four years ago with a simple cup of coffee and hours of effortless conversation.
-                    </p>
-
-                    <p class="text-gray-600 leading-relaxed">
-                        We learned that home isn't a physical place, but rather a person you love with your entire soul.
-                    </p>
+                    <div class="space-y-6 md:pl-6 text-left">
+                        <span id="story-heading-cursive" class="font-cursive text-3xl text-wedding-gold">A Love Written in the Stars</span>
+                        <h3 id="story-heading-serif" class="text-2xl font-serif text-wedding-emerald font-semibold">From Friends to Forever</h3>
+                        
+                        <!-- Dynamically filled with paragraphs from WEDDING_DATA -->
+                        <div id="story-paragraphs-container" class="space-y-4 text-gray-600 leading-relaxed text-sm md:text-base"></div>
+                        
+                        <div class="pt-4 border-t border-wedding-gold/20 flex items-center space-x-4">
+                            <div class="w-12 h-12 rounded-full border border-wedding-gold flex items-center justify-center text-wedding-gold">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                            <div>
+                                <h4 id="story-timeline-date" class="font-serif font-bold text-wedding-emerald text-sm">December 18th, 2026</h4>
+                                <p class="text-xs text-gray-500">The day we say "I Do"</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <footer class="bg-wedding-emerald text-white py-16 text-center px-4">
+        <!-- WEDDING EVENTS SECTION -->
+        <section class="py-24 px-4 bg-white reveal">
+            <div class="max-w-5xl mx-auto">
+                <div class="text-center mb-16">
+                    <span class="font-sans tracking-[0.3em] uppercase text-xs text-wedding-gold block mb-2">When & Where</span>
+                    <h2 class="text-4xl md:text-5xl font-serif text-wedding-emerald">The Celebration</h2>
+                    <div class="w-24 h-[1px] bg-wedding-gold mx-auto mt-4"></div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-10">
+                    <!-- EVENT CARD: CEREMONY -->
+                    <div class="bg-wedding-ivory p-8 md:p-12 rounded-2xl border-2 border-wedding-gold/10 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow duration-300 relative">
+                        <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 bg-wedding-gold text-white rounded-full flex items-center justify-center shadow-lg">
+                            <i class="fas fa-church"></i>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <h3 id="ceremony-title" class="font-serif text-2xl md:text-3xl text-wedding-emerald mb-2">The Vows Exchange</h3>
+                            <div id="ceremony-time" class="text-wedding-gold font-sans text-xs tracking-widest uppercase mb-4">2:00 PM – 4:00 PM</div>
+                            <div class="w-12 h-[1px] bg-wedding-gold/30 mx-auto mb-6"></div>
+                            
+                            <p id="ceremony-description" class="text-gray-600 text-sm leading-relaxed mb-8">
+                                Witness the joining of our hearts as we seal our life together with sacred vows and shared rings. Please be seated 15 minutes prior to the commencement of the ceremony.
+                            </p>
+                        </div>
+                        
+                        <div class="text-center bg-white/60 py-4 rounded-xl border border-wedding-gold/10 mt-auto">
+                            <h4 id="ceremony-venue" class="font-serif font-bold text-wedding-emerald">The Cathedral Hall</h4>
+                            <p id="ceremony-address" class="text-xs text-gray-500 mt-1">Sir Marcus Fernando Mawatha, Colombo 07</p>
+                            <a id="ceremony-directions" href="#" target="_blank" class="inline-block mt-4 text-xs font-semibold text-wedding-gold hover:text-wedding-gold/80 hover:underline">
+                                <i class="fas fa-map-marker-alt mr-2"></i>View Directions
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- EVENT CARD: RECEPTION -->
+                    <div class="bg-wedding-ivory p-8 md:p-12 rounded-2xl border-2 border-wedding-gold/10 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow duration-300 relative">
+                        <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 w-10 h-10 bg-wedding-gold text-white rounded-full flex items-center justify-center shadow-lg">
+                            <i class="fas fa-glass-cheers"></i>
+                        </div>
+                        
+                        <div class="text-center mt-4">
+                            <h3 id="reception-title" class="font-serif text-2xl md:text-3xl text-wedding-emerald mb-2">The Grand Reception</h3>
+                            <div id="reception-time" class="text-wedding-gold font-sans text-xs tracking-widest uppercase mb-4">6:30 PM Onwards</div>
+                            <div class="w-12 h-[1px] bg-wedding-gold/30 mx-auto mb-6"></div>
+                            
+                            <p id="reception-description" class="text-gray-600 text-sm leading-relaxed mb-8">
+                                Celebrate our joy with an unforgettable evening of high spirits, dynamic music, traditional cuisine, and sweet celebrations into the night. We await your presence!
+                            </p>
+                        </div>
+                        
+                        <div class="text-center bg-white/60 py-4 rounded-xl border border-wedding-gold/10 mt-auto">
+                            <h4 id="reception-venue" class="font-serif font-bold text-wedding-emerald">The Oak Room</h4>
+                            <p id="reception-address" class="text-xs text-gray-500 mt-1">Cinnamon Grand Hotel, Galle Road, Colombo 03</p>
+                            <a id="reception-directions" href="#" target="_blank" class="inline-block mt-4 text-xs font-semibold text-wedding-gold hover:text-wedding-gold/80 hover:underline">
+                                <i class="fas fa-map-marker-alt mr-2"></i>View Directions
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EMBEDDED DYNAMIC MAP BOX -->
+                <div class="mt-16 rounded-2xl overflow-hidden shadow-lg border-2 border-wedding-gold/20 h-96">
+                    <iframe 
+                      id="map-iframe"
+                      src="" 
+                      width="100%" 
+                      height="100%" 
+                      style="border:0;" 
+                      allowfullscreen="" 
+                      loading="lazy" 
+                      referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </section>
+
+        <!-- PHOTO GALLERY SHOWCASE -->
+        <section class="py-20 bg-wedding-blush/20 border-t border-b border-wedding-gold/10 reveal">
+            <div class="max-w-5xl mx-auto px-4 text-center">
+                <span class="font-sans tracking-[0.3em] uppercase text-xs text-wedding-gold block mb-2">Captured Moments</span>
+                <h2 class="text-4xl font-serif text-wedding-emerald mb-4">Our Gallery</h2>
+                <div class="w-16 h-[1px] bg-wedding-gold mx-auto mb-12"></div>
+
+                <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Images generated dynamically from WEDDING_DATA -->
+                </div>
+            </div>
+        </section>
+
+        <!-- RSVP PORTAL SECTION -->
+        <section id="rsvp-section" class="py-24 bg-wedding-emerald text-white reveal relative overflow-hidden">
+            <div class="absolute -top-16 -left-16 w-64 h-64 border border-wedding-gold/20 rounded-full pointer-events-none"></div>
+            <div class="absolute -bottom-16 -right-16 w-64 h-64 border border-wedding-gold/20 rounded-full pointer-events-none"></div>
+
+            <div class="max-w-xl mx-auto px-6 relative z-10">
+                <div class="bg-white text-wedding-charcoal p-8 md:p-12 rounded-3xl shadow-2xl border border-wedding-goldlight/30">
+                    <div class="text-center mb-8">
+                        <span class="font-cursive text-3xl text-wedding-gold">Honored Guest</span>
+                        <h2 class="text-3xl md:text-4xl font-serif text-wedding-emerald mt-1">RSVP Portal</h2>
+                        <p id="rsvp-deadline-text" class="text-xs text-gray-500 uppercase tracking-widest mt-2">Kindly respond by November 15, 2026</p>
+                        <div class="w-16 h-[1px] bg-wedding-gold/40 mx-auto mt-4"></div>
+                    </div>
+
+                    <form id="rsvp-form" class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-wedding-emerald mb-2">Your Full Name</label>
+                            <input 
+                                type="text" 
+                                id="rsvp-name"
+                                required 
+                                placeholder="e.g., Jane Karunaratne" 
+                                class="w-full px-4 py-3 bg-wedding-ivory border border-wedding-gold/30 rounded-xl focus:ring-2 focus:ring-wedding-gold focus:outline-none text-sm transition-all"
+                            />
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-wedding-emerald mb-2">Attendance</label>
+                                <select 
+                                    id="rsvp-status"
+                                    class="w-full px-4 py-3 bg-wedding-ivory border border-wedding-gold/30 rounded-xl focus:ring-2 focus:ring-wedding-gold focus:outline-none text-sm transition-all appearance-none bg-transparent"
+                                >
+                                    <option value="attending">Joyfully Accept</option>
+                                    <option value="declining">Regretfully Decline</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-wedding-emerald mb-2">Number of Guests</label>
+                                <select 
+                                    id="rsvp-guests"
+                                    class="w-full px-4 py-3 bg-wedding-ivory border border-wedding-gold/30 rounded-xl focus:ring-2 focus:ring-wedding-gold focus:outline-none text-sm transition-all bg-transparent"
+                                >
+                                    <option value="1">1 Seat</option>
+                                    <option value="2">2 Seats</option>
+                                    <option value="3">3 Seats</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="rsvp-diet-container">
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-wedding-emerald mb-2">Meal Preference</label>
+                            <select 
+                                id="rsvp-meal"
+                                class="w-full px-4 py-3 bg-wedding-ivory border border-wedding-gold/30 rounded-xl focus:ring-2 focus:ring-wedding-gold focus:outline-none text-sm transition-all bg-transparent"
+                            >
+                                <option value="standard">Standard Menu</option>
+                                <option value="vegetarian">Vegetarian / Vegan Option</option>
+                                <option value="halal">Halal Option</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-wedding-emerald mb-2">Special Message (Optional)</label>
+                            <textarea 
+                                id="rsvp-message"
+                                rows="3" 
+                                placeholder="Leave a sweet note for us..." 
+                                class="w-full px-4 py-3 bg-wedding-ivory border border-wedding-gold/30 rounded-xl focus:ring-2 focus:ring-wedding-gold focus:outline-none text-sm transition-all resize-none"
+                            ></textarea>
+                        </div>
+
+                        <button 
+                            type="submit" 
+                            class="w-full py-4 bg-wedding-emerald text-white rounded-xl shadow-lg hover:bg-wedding-emerald/95 transition-all duration-300 font-semibold tracking-widest text-xs uppercase border border-wedding-gold"
+                        >
+                            Submit My Response
+                        </button>
+                    </form>
+
+                    <div id="rsvp-success-view" class="hidden text-center py-12 space-y-4">
+                        <div class="inline-flex w-16 h-16 bg-wedding-blush text-wedding-gold rounded-full items-center justify-center text-3xl shadow-md">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3 class="font-serif text-2xl text-wedding-emerald">Response Recorded</h3>
+                        <p id="rsvp-success-message" class="text-sm text-gray-500 max-w-sm mx-auto">
+                            Thank you for your response! We have received your message.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WISHES & BLESSINGS WALL (GUESTBOOK) -->
+        <section class="py-24 px-4 bg-wedding-ivory reveal">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-16">
+                    <span class="font-sans tracking-[0.3em] uppercase text-xs text-wedding-gold block mb-2">Send Love</span>
+                    <h2 class="text-4xl font-serif text-wedding-emerald">Blessings Wall</h2>
+                    <p class="text-xs text-gray-500 mt-2 italic">Read beautiful wishes left by family and loved ones</p>
+                    <div class="w-24 h-[1px] bg-wedding-gold mx-auto mt-4"></div>
+                </div>
+
+                <div class="bg-white p-6 md:p-8 rounded-2xl shadow-md border border-wedding-gold/10 mb-12 max-w-xl mx-auto">
+                    <h3 class="font-serif text-lg text-wedding-emerald mb-4 text-center">Leave a Blessing</h3>
+                    <form id="blessing-form" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input 
+                                type="text" 
+                                id="blessing-author"
+                                required 
+                                placeholder="Your Name" 
+                                class="w-full px-4 py-3 bg-wedding-ivory border border-wedding-gold/20 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-wedding-gold"
+                            />
+                            <input 
+                                type="text" 
+                                id="blessing-relation"
+                                placeholder="Relationship (e.g., Groom's Friend)" 
+                                class="w-full px-4 py-3 bg-wedding-ivory border border-wedding-gold/20 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-wedding-gold"
+                            />
+                        </div>
+                        <textarea 
+                            id="blessing-text"
+                            required 
+                            rows="2" 
+                            placeholder="Write your wishes here..." 
+                            class="w-full px-4 py-3 bg-wedding-ivory border border-wedding-gold/20 rounded-xl text-sm focus:outline-none focus:ring-1 focus:ring-wedding-gold resize-none"
+                        ></textarea>
+                        <button 
+                            type="submit" 
+                            class="w-full py-3 bg-wedding-gold text-white font-semibold text-xs uppercase tracking-widest rounded-xl hover:bg-wedding-gold/90 transition-all shadow-md"
+                        >
+                            Post Greeting
+                        </button>
+                    </form>
+                </div>
+
+                <div id="wishes-wall-grid" class="grid sm:grid-cols-2 gap-6">
+                    <!-- Dynamic Greetings generated here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="bg-wedding-emerald text-white py-16 text-center px-4 relative">
             <div class="max-w-xl mx-auto space-y-4">
-                <span class="font-cursive text-4xl text-wedding-goldlight">Akarsha & Sadeepa</span>
-                <p class="text-[11px] uppercase tracking-[0.4em] text-wedding-blush/60">December 18, 2026</p>
+                <span id="footer-couple-names" class="font-cursive text-4xl text-wedding-goldlight">Akarsha & Sadeepa</span>
+                <p id="footer-display-date" class="text-[11px] uppercase tracking-[0.4em] text-wedding-blush/60">December 18, 2026</p>
+                <div class="w-16 h-[1px] bg-wedding-gold/30 mx-auto"></div>
+                <p id="footer-copyright" class="text-[10px] text-wedding-blush/40 uppercase tracking-[0.2em] pt-4">© 2026 Akarsha & Sadeepa. Built with Premium Love.</p>
             </div>
         </footer>
 
     </div>
 
     <script>
-        const btnOpen = document.getElementById('btn-open');
-        const overlay = document.getElementById('envelope-overlay');
-        const content = document.getElementById('main-content');
+        // ==========================================
+        //  EXTERNAL-STYLE DYNAMIC DATA DICTIONARY
+        // ==========================================
+        const WEDDING_DATA = {
+            couple: {
+                groom: "Akarsha",
+                bride: "Sadeepa",
+                shortNames: "Akarsha & Sadeepa",
+                tagline: '"Together is our favorite place to be"',
+                storyTitle: "A Love Written in the Stars",
+                storySubtitle: "From Friends to Forever",
+                storyParagraphs: [
+                    "Our story began exactly four years ago with a simple cup of coffee and hours of effortless conversation. From that moment onwards, our connection deepened, bringing laughter, discovery, and endless milestones.",
+                    "We learned that home isn't a physical place, but rather a person you love with your entire soul. We would be incredibly honored to celebrate the next great milestone of our journey with you."
+                ],
+                images: {
+                    heroBg: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=1600",
+                    mosaicMain: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=800",
+                    mosaicThumb1: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&q=80&w=400",
+                    mosaicThumb2: "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?auto=format&fit=crop&q=80&w=400",
+                    gallery: [
+                        "https://images.unsplash.com/photo-1606800052052-a08af7148866?auto=format&fit=crop&q=80&w=500",
+                        "https://images.unsplash.com/photo-1519225495810-7517c69656e2?auto=format&fit=crop&q=80&w=500",
+                        "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=500",
+                        "https://images.unsplash.com/photo-1460364155651-4ae733008705?auto=format&fit=crop&q=80&w=500"
+                    ]
+                }
+            },
+            dateTime: {
+                weddingDateISO: "2026-12-18T14:00:00", // Target Countdown Clock Target 
+                displayDate: "December 18, 2026",
+                displayLocation: "Colombo, Sri Lanka",
+                rsvpDeadline: "Kindly RSVP by November 15, 2026"
+            },
+            events: {
+                ceremony: {
+                    title: "The Vows Exchange",
+                    time: "2:00 PM – 4:00 PM",
+                    description: "Witness the joining of our hearts as we seal our life together with sacred vows and shared rings. Please be seated 15 minutes prior to the commencement of the ceremony.",
+                    venue: "The Cathedral Hall",
+                    address: "Sir Marcus Fernando Mawatha, Colombo 07",
+                    directionsUrl: "https://maps.app.goo.gl/3ae259424699564f"
+                },
+                reception: {
+                    title: "The Grand Reception",
+                    time: "6:30 PM Onwards",
+                    description: "Celebrate our joy with an unforgettable evening of high spirits, dynamic music, traditional cuisine, and sweet celebrations into the night. We await your presence!",
+                    venue: "The Oak Room",
+                    address: "Cinnamon Grand Hotel, Galle Road, Colombo 03",
+                    directionsUrl: "https://maps.app.goo.gl/3ae259424699564f"
+                },
+                mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.7937408892784!2d79.84656207589578!3d6.915234518485292!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae259424699564f%3A0xe5ec7cf92fca3ec2!2sCinnamon%20Grand%20Colombo!5e0!3m2!1sen!2slk!4v1710000000000!5m2!1sen!2slk"
+            },
+            audio: {
+                chordIntervalMs: 4500,
+                chordList: [
+                    [261.63, 329.63, 392.00, 523.25], // C Major
+                    [293.66, 349.23, 440.00, 587.33], // D Minor
+                    [329.63, 392.00, 493.88, 659.25], // E Minor
+                    [349.23, 440.00, 523.25, 698.46]  // F Major
+                ]
+            },
+            canvas: {
+                petalColor: 'rgba(245, 182, 185, 0.7)',
+                goldColor: 'rgba(218, 165, 32, 0.8)'
+            }
+        };
 
-        btnOpen.addEventListener('click', () => {
-            overlay.classList.add('hidden');
-            content.classList.remove('hidden');
+        function initializeWeddingContent() {
+            try {
+                // Update Page Titles
+                document.getElementById('page-title').innerText = `Wedding of ${WEDDING_DATA.couple.shortNames}`;
+                
+                // Overlay Screen
+                document.getElementById('envelope-couple-names').innerText = WEDDING_DATA.couple.shortNames;
+
+                // Hero Page
+                document.getElementById('hero-bg').style.backgroundImage = `url('${WEDDING_DATA.couple.images.heroBg}')`;
+                document.getElementById('hero-couple-names').innerText = WEDDING_DATA.couple.shortNames;
+                document.getElementById('hero-tagline').innerText = WEDDING_DATA.couple.tagline;
+                document.getElementById('hero-display-date').innerText = WEDDING_DATA.dateTime.displayDate;
+                document.getElementById('hero-display-location').innerText = WEDDING_DATA.dateTime.displayLocation;
+
+                // Story Details
+                document.getElementById('story-main-img').src = WEDDING_DATA.couple.images.mosaicMain;
+                document.getElementById('story-thumb1-img').src = WEDDING_DATA.couple.images.mosaicThumb1;
+                document.getElementById('story-thumb2-img').src = WEDDING_DATA.couple.images.mosaicThumb2;
+                document.getElementById('story-heading-cursive').innerText = WEDDING_DATA.couple.storyTitle;
+                document.getElementById('story-heading-serif').innerText = WEDDING_DATA.couple.storySubtitle;
+                document.getElementById('story-timeline-date').innerText = WEDDING_DATA.dateTime.displayDate;
+
+                // Render Story Paragraphs dynamically
+                const paragraphContainer = document.getElementById('story-paragraphs-container');
+                paragraphContainer.innerHTML = '';
+                WEDDING_DATA.couple.storyParagraphs.forEach(p => {
+                    const textNode = document.createElement('p');
+                    textNode.innerText = p;
+                    paragraphContainer.appendChild(textNode);
+                });
+
+                // Event details injection
+                document.getElementById('ceremony-title').innerText = WEDDING_DATA.events.ceremony.title;
+                document.getElementById('ceremony-time').innerText = WEDDING_DATA.events.ceremony.time;
+                document.getElementById('ceremony-description').innerText = WEDDING_DATA.events.ceremony.description;
+                document.getElementById('ceremony-venue').innerText = WEDDING_DATA.events.ceremony.venue;
+                document.getElementById('ceremony-address').innerText = WEDDING_DATA.events.ceremony.address;
+                document.getElementById('ceremony-directions').href = WEDDING_DATA.events.ceremony.directionsUrl;
+
+                document.getElementById('reception-title').innerText = WEDDING_DATA.events.reception.title;
+                document.getElementById('reception-time').innerText = WEDDING_DATA.events.reception.time;
+                document.getElementById('reception-description').innerText = WEDDING_DATA.events.reception.description;
+                document.getElementById('reception-venue').innerText = WEDDING_DATA.events.reception.venue;
+                document.getElementById('reception-address').innerText = WEDDING_DATA.events.reception.address;
+                document.getElementById('reception-directions').href = WEDDING_DATA.events.reception.directionsUrl;
+
+                // Dynamic Map Target
+                document.getElementById('map-iframe').src = WEDDING_DATA.events.mapEmbedUrl;
+
+                // Gallery Elements
+                const galleryGrid = document.getElementById('gallery-grid');
+                galleryGrid.innerHTML = '';
+                WEDDING_DATA.couple.images.gallery.forEach((url, i) => {
+                    const galleryItem = document.createElement('div');
+                    galleryItem.className = 'relative overflow-hidden rounded-xl shadow-md group aspect-[3/4] border border-wedding-gold/15';
+                    galleryItem.innerHTML = `
+                        <img src="${url}" alt="Gallery capture ${i + 1}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    `;
+                    galleryGrid.appendChild(galleryItem);
+                });
+
+                // RSVP Deadline details
+                document.getElementById('rsvp-deadline-text').innerText = WEDDING_DATA.dateTime.rsvpDeadline;
+                document.getElementById('rsvp-success-message').innerText = `Thank you for your response! ${WEDDING_DATA.couple.shortNames} have received your message. We cannot wait to celebrate together!`;
+
+                // Footer section details
+                document.getElementById('footer-couple-names').innerText = WEDDING_DATA.couple.shortNames;
+                document.getElementById('footer-display-date').innerText = WEDDING_DATA.dateTime.displayDate;
+                document.getElementById('footer-copyright').innerText = `© 2026 ${WEDDING_DATA.couple.shortNames}. Built with Premium Love.`;
+
+            } catch (err) {
+                console.error("Error setting up wedding dynamic variables: ", err);
+            }
+        }
+
+        // Call initializer as first priority on load
+        initializeWeddingContent();
+
+        // --- AMBIENT SOUND GENERATION ENGINE (Romantic Harp Chords via Web Audio API) ---
+        let audioCtx = null;
+        let isAudioPlaying = false;
+        let playInterval = null;
+
+        function initAmbientSynthesizer() {
+            if (audioCtx) return;
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContextClass();
+        }
+
+        function playRomanticPluck(noteFreq, delay = 0) {
+            if (!audioCtx) return;
+            
             setTimeout(() => {
-                content.classList.add('opacity-100');
-            }, 100);
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const osc = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                const filter = audioCtx.createBiquadFilter();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(noteFreq, audioCtx.currentTime);
+
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(800, audioCtx.currentTime);
+                filter.Q.setValueAtTime(1, audioCtx.currentTime);
+
+                gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 0.08); 
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 2.5); 
+
+                osc.connect(filter);
+                filter.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 2.6);
+            }, delay * 1000);
+        }
+
+        function playWeddingChords() {
+            if (!isAudioPlaying) return;
+
+            const chordPacks = WEDDING_DATA.audio.chordList;
+            const randomChord = chordPacks[Math.floor(Math.random() * chordPacks.length)];
+            
+            randomChord.forEach((freq, index) => {
+                playRomanticPluck(freq, index * 0.4);
+            });
+        }
+
+        function startHarmoniousBackgroundLoop() {
+            isAudioPlaying = true;
+            playWeddingChords(); 
+            playInterval = setInterval(playWeddingChords, WEDDING_DATA.audio.chordIntervalMs);
+            updateMusicIcon(true);
+        }
+
+        function stopHarmoniousBackgroundLoop() {
+            isAudioPlaying = false;
+            if (playInterval) clearInterval(playInterval);
+            updateMusicIcon(false);
+        }
+
+        function updateMusicIcon(playing) {
+            const icon = document.getElementById('music-icon');
+            if (playing) {
+                icon.className = 'fas fa-volume-up text-lg text-wedding-gold animate-pulse';
+            } else {
+                icon.className = 'fas fa-volume-mute text-lg text-gray-400';
+            }
+        }
+
+        document.getElementById('btn-music-toggle').addEventListener('click', () => {
+            initAmbientSynthesizer();
+            if (isAudioPlaying) {
+                stopHarmoniousBackgroundLoop();
+            } else {
+                startHarmoniousBackgroundLoop();
+            }
         });
 
-        function updateCountdown() {
-            const targetDate = new Date('2026-12-18T14:00:00').getTime();
+        // --- DYNAMIC LIVE COUNTDOWN TIMER ---
+        function updateWeddingCountdown() {
+            const targetDate = new Date(WEDDING_DATA.dateTime.weddingDateISO).getTime();
             const now = new Date().getTime();
             const difference = targetDate - now;
+
+            if (difference < 0) {
+                document.getElementById('days').innerText = "00";
+                document.getElementById('hours').innerText = "00";
+                document.getElementById('minutes').innerText = "00";
+                document.getElementById('seconds').innerText = "00";
+                return;
+            }
 
             const days = Math.floor(difference / (1000 * 60 * 60 * 24));
             const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -192,8 +743,226 @@
             document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
         }
 
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
+        setInterval(updateWeddingCountdown, 1000);
+        updateWeddingCountdown(); 
+
+        // --- SCROLL REVEAL ANIMATIONS ---
+        const reveals = document.querySelectorAll('.reveal');
+        
+        function handleScrollReveal() {
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 100;
+
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', handleScrollReveal);
+        
+        // --- INTERACTIVE RSVP FORM FLOW ---
+        const rsvpForm = document.getElementById('rsvp-form');
+        const rsvpSuccessView = document.getElementById('rsvp-success-view');
+        const rsvpStatus = document.getElementById('rsvp-status');
+        const rsvpDietContainer = document.getElementById('rsvp-diet-container');
+
+        rsvpStatus.addEventListener('change', (e) => {
+            if (e.target.value === 'declining') {
+                rsvpDietContainer.style.display = 'none';
+                document.getElementById('rsvp-guests').disabled = true;
+            } else {
+                rsvpDietContainer.style.display = 'block';
+                document.getElementById('rsvp-guests').disabled = false;
+            }
+        });
+
+        rsvpForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const rsvpData = {
+                name: document.getElementById('rsvp-name').value,
+                status: document.getElementById('rsvp-status').value,
+                guests: document.getElementById('rsvp-guests').value,
+                meal: document.getElementById('rsvp-meal').value,
+                message: document.getElementById('rsvp-message').value
+            };
+
+            console.log("Submitting RSVP Response:", rsvpData);
+            
+            rsvpForm.classList.add('hidden');
+            rsvpSuccessView.classList.remove('hidden');
+        });
+
+        // --- GUESTBOOK / BLESSINGS WALL ENGINE ---
+        const blessingsForm = document.getElementById('blessing-form');
+        const wishesWallGrid = document.getElementById('wishes-wall-grid');
+
+        const defaultBlessings = [
+            { author: "Mahesh & Kanchana", relation: "Groom's Family", text: "May your joint journey be filled with eternal romance, beautiful laughter, and endless memories! So proud of you both.", time: "2 hours ago" },
+            { author: "Senali Perera", relation: "Bride's Sister", text: "Can't wait to dance at my beautiful sister's grand wedding! Wishing you lifetime happiness!", time: "5 hours ago" },
+            { author: "Roshan de Silva", relation: "Best Friend", text: "Wishing my brother Akarsha and sister Sadeepa the ultimate happiness. You both complete each other perfectly. Let's celebrate!", time: "1 day ago" }
+        ];
+
+        let savedWishes = JSON.parse(localStorage.getItem('wedding_wishes')) || defaultBlessings;
+
+        function renderWishes() {
+            wishesWallGrid.innerHTML = '';
+            savedWishes.forEach(wish => {
+                const wishCard = document.createElement('div');
+                wishCard.className = 'bg-white p-6 rounded-2xl border border-wedding-gold/15 shadow-sm space-y-3 relative hover:-translate-y-1 transition-transform duration-300';
+                
+                wishCard.innerHTML = `
+                    <div class="absolute top-4 right-4 text-wedding-gold/30 text-2xl font-serif">“</div>
+                    <p class="text-gray-600 text-sm leading-relaxed italic">"${wish.text}"</p>
+                    <div class="flex items-center justify-between pt-3 border-t border-wedding-blush text-xs">
+                        <div>
+                            <span class="block font-serif font-bold text-wedding-emerald text-sm">${wish.author}</span>
+                            <span class="text-gray-400 text-[10px]">${wish.relation || 'Well Wisher'}</span>
+                        </div>
+                        <span class="text-wedding-gold font-medium text-[10px] uppercase tracking-wider">${wish.time || 'Just Now'}</span>
+                    </div>
+                `;
+                wishesWallGrid.appendChild(wishCard);
+            });
+        }
+
+        blessingsForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const author = document.getElementById('blessing-author').value;
+            const relation = document.getElementById('blessing-relation').value;
+            const text = document.getElementById('blessing-text').value;
+
+            const newWish = {
+                author,
+                relation,
+                text,
+                time: "Just Now"
+            };
+
+            savedWishes.unshift(newWish);
+            localStorage.setItem('wedding_wishes', JSON.stringify(savedWishes));
+            
+            blessingsForm.reset();
+            renderWishes();
+        });
+
+        renderWishes();
+
+        // --- AMBIENT FLOATING ROSE PETALS & GOLD SHOWER ---
+        function runAmbientCanvas(canvasId, speedMultiplier = 1) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+
+            let width = canvas.width = canvas.offsetWidth;
+            let height = canvas.height = canvas.offsetHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = canvas.offsetWidth;
+                height = canvas.height = canvas.offsetHeight;
+            });
+
+            class FloatingParticle {
+                constructor() {
+                    this.reset();
+                    this.y = Math.random() * height; 
+                }
+
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = -20;
+                    this.size = Math.random() * 5 + 2;
+                    this.speedY = (Math.random() * 1.2 + 0.4) * speedMultiplier;
+                    this.speedX = (Math.random() * 0.8 - 0.4) * speedMultiplier;
+                    this.opacity = Math.random() * 0.5 + 0.3;
+                    this.type = Math.random() > 0.6 ? 'petal' : 'gold'; 
+                    this.rotation = Math.random() * 360;
+                    this.rotationSpeed = Math.random() * 2 - 1;
+                }
+
+                update() {
+                    this.y += this.speedY;
+                    this.x += this.speedX + Math.sin(this.y / 30) * 0.3; 
+                    this.rotation += this.rotationSpeed;
+
+                    if (this.y > height + 20) {
+                        this.reset();
+                    }
+                }
+
+                draw() {
+                    ctx.save();
+                    ctx.translate(this.x, this.y);
+                    ctx.rotate((this.rotation * Math.PI) / 180);
+                    ctx.globalAlpha = this.opacity;
+
+                    if (this.type === 'petal') {
+                        ctx.fillStyle = WEDDING_DATA.canvas.petalColor;
+                        ctx.beginPath();
+                        ctx.ellipse(0, 0, this.size * 1.5, this.size, 0, 0, 2 * Math.PI);
+                        ctx.fill();
+                    } else {
+                        ctx.fillStyle = WEDDING_DATA.canvas.goldColor;
+                        ctx.beginPath();
+                        ctx.rect(-this.size/2, -this.size/2, this.size, this.size);
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+            }
+
+            const particles = [];
+            const maxParticles = width < 768 ? 30 : 65;
+
+            for (let i = 0; i < maxParticles; i++) {
+                particles.push(new FloatingParticle());
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                requestAnimationFrame(animate);
+            }
+
+            animate();
+        }
+
+        // --- INTERACTIVE COVER REVEAL TRIGGER ---
+        const btnOpen = document.getElementById('btn-open');
+        const envelopeOverlay = document.getElementById('envelope-overlay');
+        const mainContent = document.getElementById('main-content');
+        const musicContainer = document.getElementById('music-container');
+        const ambientCanvas = document.getElementById('ambient-canvas');
+
+        runAmbientCanvas('envelope-canvas', 0.5);
+
+        btnOpen.addEventListener('click', () => {
+            initAmbientSynthesizer();
+            startHarmoniousBackgroundLoop();
+
+            envelopeOverlay.classList.add('opacity-0', 'pointer-events-none');
+            
+            setTimeout(() => {
+                envelopeOverlay.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                musicContainer.classList.remove('hidden');
+                ambientCanvas.classList.remove('hidden');
+                
+                setTimeout(() => {
+                    mainContent.classList.add('opacity-100');
+                    runAmbientCanvas('ambient-canvas', 1);
+                    handleScrollReveal();
+                }, 100);
+
+            }, 800);
+        });
+
     </script>
 </body>
 </html>
